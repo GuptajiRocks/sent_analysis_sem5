@@ -1,4 +1,4 @@
-# sentiment_analysis_pipeline.py
+# sentiment_analysis_pipeline_v2.py
 
 import pandas as pd
 import numpy as np
@@ -9,86 +9,120 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import joblib
+import warnings
+warnings.filterwarnings("ignore")
 
 # ---------------------------
 # 1️⃣ Cleaning Function
 # ---------------------------
 def clean_text(text):
     text = str(text).lower()
-    text = re.sub(r'http\S+|www\S+', '', text)
-    text = re.sub(r'@\w+|#\w+', '', text)
-    text = re.sub(r'[^a-z\s]', '', text)
+    text = re.sub(r"http\S+|www\S+", "", text)
+    text = re.sub(r"@\w+|#\w+", "", text)
+    text = re.sub(r"[^a-z\s]", "", text)
     return text.strip()
 
 # ---------------------------
-# 2️⃣ Load + Normalize Labels
+# 2️⃣ Unified Label Mapping
 # ---------------------------
 label_map = {
-    'positive': 'positive',
-    'negative': 'negative',
-    'neutral': 'neutral',
-    'yes': 'positive',
-    'no': 'negative',
-    'not sure': 'neutral'
+    # airline.tsv
+    "positive": "positive",
+    "negative": "negative",
+    "neutral": "neutral",
+
+    # eco_news.tsv
+    "yes": "positive",
+    "no": "negative",
+    "not sure": "neutral",
+
+    # glo_warm.tsv
+    "y": "positive",
+    "n": "negative",
+
+    # text_emo.tsv (emotion-based)
+    "happiness": "positive",
+    "enthusiasm": "positive",
+    "love": "positive",
+    "fun": "positive",
+    "relief": "positive",
+    "surprise": "positive",
+
+    "anger": "negative",
+    "hate": "negative",
+    "sadness": "negative",
+    "worry": "negative",
+    "boredom": "negative",
+
+    "neutral": "neutral",
+    "empty": "neutral",
 }
 
+# ---------------------------
+# 3️⃣ Generic Loader Function
+# ---------------------------
 def load_and_clean(path):
-    df = pd.read_csv(path, sep='\t', encoding="latin1")
+    df = pd.read_csv(path, sep="\t", encoding="latin1")
     df.columns = [c.lower() for c in df.columns]
-    text_col = [c for c in df.columns if 'text' in c][0]
-    label_col = [c for c in df.columns if 'label' in c or 'sentiment' in c][0]
+    # Find likely text and label columns
+    text_col = [c for c in df.columns if "text" in c or "tweet" in c or "message" in c][0]
+    label_col = [c for c in df.columns if "label" in c or "sentiment" in c or "emotion" in c][0]
     df = df[[text_col, label_col]].dropna()
-    df.columns = ['text', 'label']
-    df['label'] = df['label'].str.lower().map(label_map)
-    df = df[df['label'].isin(['positive', 'negative', 'neutral'])]
-    df['text'] = df['text'].apply(clean_text)
-    df.drop_duplicates(subset='text', inplace=True)
+    df.columns = ["text", "label"]
+    df["label"] = df["label"].astype(str).str.lower().map(label_map)
+    df = df[df["label"].isin(["positive", "negative", "neutral"])]
+    df["text"] = df["text"].apply(clean_text)
+    df.drop_duplicates(subset="text", inplace=True)
     return df
 
 # ---------------------------
-# 3️⃣ Load Sentiment Datasets
+# 4️⃣ Load and Merge Datasets
 # ---------------------------
-df_air = load_and_clean('../data/pick/airline.tsv')
-df_eco = load_and_clean('../data/pick/eco_news.tsv')
+print("📂 Loading datasets...")
 
-df = pd.concat([df_air, df_eco], ignore_index=True)
+df_air = load_and_clean("../data/pick/airline.tsv")
+df_eco = load_and_clean("../data/pick/eco_news.tsv")
+df_glo = load_and_clean("../data/pick/glo_warm.tsv")
+df_txt = load_and_clean("../data/pick/text_emo.tsv")
+
+df = pd.concat([df_air, df_eco, df_glo, df_txt], ignore_index=True)
 print("✅ Combined Dataset Shape:", df.shape)
-print(df['label'].value_counts())
+print(df["label"].value_counts())
 
 # ---------------------------
-# 4️⃣ Encode + Split
+# 5️⃣ Encode Labels + Split
 # ---------------------------
 le = LabelEncoder()
-df['label_encoded'] = le.fit_transform(df['label'])
+df["label_encoded"] = le.fit_transform(df["label"])
 
 X_train, X_test, y_train, y_test = train_test_split(
-    df['text'], df['label_encoded'],
-    test_size=0.2, random_state=42, stratify=df['label_encoded']
+    df["text"], df["label_encoded"],
+    test_size=0.2, random_state=42, stratify=df["label_encoded"]
 )
 
 # ---------------------------
-# 5️⃣ TF-IDF Vectorization
+# 6️⃣ TF-IDF Vectorization
 # ---------------------------
 vectorizer = TfidfVectorizer(max_features=15000, ngram_range=(1,2))
 X_train_vec = vectorizer.fit_transform(X_train)
 X_test_vec = vectorizer.transform(X_test)
 
 # ---------------------------
-# 6️⃣ Model Training
+# 7️⃣ Model Training
 # ---------------------------
-model = LogisticRegression(max_iter=300)
+model = LogisticRegression(max_iter=400, class_weight='balanced', solver='lbfgs')
 model.fit(X_train_vec, y_train)
 
 # ---------------------------
-# 7️⃣ Evaluation
+# 8️⃣ Evaluation
 # ---------------------------
 y_pred = model.predict(X_test_vec)
 print("\n📊 Classification Report:\n")
 print(classification_report(y_test, y_pred, target_names=le.classes_))
-print("✅ Accuracy:", accuracy_score(y_test, y_pred))
+print("✅ Accuracy:", round(accuracy_score(y_test, y_pred), 3))
 
 # ---------------------------
-# 8️⃣ Prediction Function
+# 9️⃣ Prediction Function
 # ---------------------------
 def predict_sentiment(text):
     clean = clean_text(text)
@@ -98,13 +132,13 @@ def predict_sentiment(text):
     top_label = result[0][0]
     return {"input": text, "predicted": top_label, "probabilities": result}
 
-# Example
-sample = "This is the worst piece of good chicken I have ever seen"
-print("\n🔍 Example Prediction:")
-print(predict_sentiment(sample))
+# Example Prediction
+sample_text = "I absolutely loved the new policy changes, they are great!"
+print("\n🔍 Example Prediction:\n")
+print(predict_sentiment(sample_text))
 
-# # ---------------------------
-# # 9️⃣ Save Model
-# # ---------------------------
-# joblib.dump((vectorizer, model, le), "sentiment_model.pkl")
-# print("\n💾 Model saved as sentiment_model.pkl")
+# ---------------------------
+# 🔟 Save Model
+# ---------------------------
+joblib.dump((vectorizer, model, le), "sentiment_model.pkl")
+print("\n💾 Model saved as 'sentiment_model.pkl'")
