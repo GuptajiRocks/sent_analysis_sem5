@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sentiment Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 min-h-screen">
+  <nav class="bg-white/70 backdrop-blur-md shadow-md p-4 flex justify-between">
+    <h1 class="text-2xl font-bold text-blue-700">Sentiment Dashboard</h1>
+    {% if session['user'] %}
+    <a href="{{ url_for('logout') }}" class="text-red-500 font-semibold">Logout</a>
+    {% endif %}
+  </nav>
+
+  <div class="max-w-2xl mx-auto mt-8 p-6 bg-white/80 rounded-2xl shadow-lg">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="p-3 mb-3 rounded-lg
+            {% if category=='error' %}bg-red-200 text-red-700{% elif category=='success' %}bg-green-200 text-green-700{% else %}bg-blue-200 text-blue-700{% endif %}">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

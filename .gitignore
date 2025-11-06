@@ -1,3 +1,8 @@
 .venv
 data
 .idea
+/flask_app/sentiment_model_xgb.pkl
+sentiment_model_xgb.pkl
+sentiment_model.pkl
+/trial/sentiment_model.pkl
+/trial/sentiment_model_xgb.pkl

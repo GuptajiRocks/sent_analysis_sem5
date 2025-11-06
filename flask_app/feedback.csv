@@ -1,0 +1,8 @@
+username,text,predicted_label,user_feedback
+guptajirocks,I hate my life,neutral,false
+guptajirocks,"I am a Happy Man
+",neutral,false
+guptajirocks,I like to play games,neutral,false
+guptajirocks,I am a Happy Man,positive,true
+guptajirocks,I hate this life,negative,true
+guptajirocks,Who are you to tell  me what to do and what not to do?,negative,true
