@@ -144,10 +144,10 @@ def predict_sentiments(text, vectorizer, model, le):
     return result
     # return {"input": text, "predicted": result[0][0], "probabilities": result}
 
-# if __name__ == "__main__":
-#     vectorizer, model, le = load_or_train_model(force_retrain=False)
-#
-#     # Example usage
-#     sample = "I hate this life"
-#     print("\nExample Prediction:")
-#     print(predict_sentiments(sample, vectorizer, model, le))
+if __name__ == "__main__":
+    vectorizer, model, le = load_or_train_model(force_retrain=False)
+
+    # Example usage
+    sample = "I hate this life"
+    print("\nExample Prediction:")
+    print(predict_sentiments(sample, vectorizer, model, le)[0])

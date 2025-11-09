@@ -6,3 +6,6 @@ sentiment_model_xgb.pkl
 sentiment_model.pkl
 /trial/sentiment_model.pkl
 /trial/sentiment_model_xgb.pkl
+/cuda/glove.6B.zip
+/cuda/best_lstm.h5
+/cuda/best_gru.h5
