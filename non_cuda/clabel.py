@@ -1,5 +1,7 @@
 import pandas as pd
 from datasets import load_dataset
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 # --- Load local TSV datasets ---
 paths = {
@@ -36,6 +38,21 @@ dfs.append(hf_to_df(hf_tweeteval, "TweetEval"))
 combined_df = pd.concat(dfs, ignore_index=True)
 
 # --- Display unique class labels ---
-unique_labels = sorted(combined_df["label"].astype(str).str.strip().str.lower().unique())
-print("Total unique classes:", len(unique_labels))
-print("Classes:\n", unique_labels)
+# unique_labels = sorted(combined_df["label"].astype(str).str.strip().str.lower().unique())
+# print("Total unique classes:", len(unique_labels))
+# print("Classes:\n", unique_labels)
+
+full_text = " ".join(combined_df["text"].astype(str).tolist())
+
+wc = WordCloud(
+    width=1600,
+    height=900,
+    background_color="white",
+    max_words=300,
+    collocations=False
+).generate(full_text)
+
+plt.figure(figsize=(16,9))
+plt.imshow(wc, interpolation="bilinear")
+plt.axis("off")
+plt.show()
