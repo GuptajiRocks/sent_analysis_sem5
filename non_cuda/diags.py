@@ -16,10 +16,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # ---------------------------------------------
 # Adjust the file paths if needed
 files = {
-    "airline": "airline.tsv",
-    "eco_news": "eco_news.tsv",
-    "glo_warm": "glo_warm.tsv",
-    "text_emo": "text_emo.tsv"
+    "airline": "non_cuda/airline.tsv",
+    "eco_news": "non_cuda/eco_news.tsv",
+    "glo_warm": "non_cuda/glo_warm.tsv",
+    "text_emo": "non_cuda/text_emo.tsv"
 }
 
 dataframes = []

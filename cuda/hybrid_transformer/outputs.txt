@@ -1,0 +1,75 @@
+Device: cuda
+
+=== Loading local datasets ===
+  airline: 14640 rows | labels: ['neutral', 'positive', 'negative']
+  eco_news: 8000 rows | labels: ['yes', 'no', 'not sure']
+  glo_warm: 4225 rows | labels: ['Yes', 'No', 'Y', 'N']
+  text_emo: 40000 rows | labels: ['empty', 'sadness', 'enthusiasm', 'neutral', 'worry', 'surprise', 'love', 'fun', 'hate', 'happiness', 'boredom', 'relief', 'anger']
+
+=== Loading Hugging Face datasets ===
+/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_auth.py:94: UserWarning: 
+The secret `HF_TOKEN` does not exist in your Colab secrets.
+To authenticate with the Hugging Face Hub, create a token in your settings tab (https://huggingface.co/settings/tokens), set it as secret in your Google Colab and restart your session.
+You will be able to reuse this secret in all of your notebooks.
+Please note that authentication is recommended but still optional to access public models or datasets.
+  warnings.warn(
+README.md: 
+ 9.05k/? [00:00<00:00, 657kB/s]
+split/train-00000-of-00001.parquet: 100%
+ 1.03M/1.03M [00:00<00:00, 1.32MB/s]
+split/validation-00000-of-00001.parquet:  32%
+ 41.1k/127k [00:00<00:00, 327kB/s]
+split/test-00000-of-00001.parquet: 100%
+ 129k/129k [00:00<00:00, 645kB/s]
+Generating train split: 100%
+ 16000/16000 [00:00<00:00, 226408.59 examples/s]
+Generating validation split: 100%
+ 2000/2000 [00:00<00:00, 68462.78 examples/s]
+Generating test split: 100%
+ 2000/2000 [00:00<00:00, 66123.88 examples/s]
+README.md: 
+ 23.9k/? [00:00<00:00, 2.29MB/s]
+sentiment/train-00000-of-00001.parquet:  99%
+ 3.75M/3.78M [00:01<00:00, 3.50MB/s]
+sentiment/test-00000-of-00001.parquet: 100%
+ 901k/901k [00:00<00:00, 1.19MB/s]
+sentiment/validation-00000-of-00001.parq(…): 100%
+ 167k/167k [00:00<00:00, 921kB/s]
+Generating train split: 100%
+ 45615/45615 [00:00<00:00, 524443.21 examples/s]
+Generating test split: 100%
+ 12284/12284 [00:00<00:00, 318478.60 examples/s]
+Generating validation split: 100%
+ 2000/2000 [00:00<00:00, 77261.66 examples/s]
+  emotion_hf:  20000 rows
+  tweet_eval:  59899 rows
+
+=== Building unified corpus ===
+Combined shape: (146764, 3)
+Source counts:
+ source
+tweet_eval    59899
+text_emo      40000
+emotion_hf    20000
+airline       14640
+eco_news       8000
+glo_warm       4225
+Name: count, dtype: int64
+
+Unique labels (25):
+ ['0', '1', '2', 'anger', 'boredom', 'empty', 'enthusiasm', 'fear', 'fun', 'happiness', 'hate', 'joy', 'love', 'n', 'negative', 'neutral', 'no', 'not sure', 'positive', 'relief', 'sadness', 'surprise', 'worry', 'y', 'yes']
+
+Split sizes — train: 102734, val: 22015, test: 22015
+Num classes: 25
+Classes: ['0', '1', '2', 'anger', 'boredom', 'empty', 'enthusiasm', 'fear', 'fun', 'happiness', 'hate', 'joy', 'love', 'n', 'negative', 'neutral', 'no', 'not sure', 'positive', 'relief', 'sadness', 'surprise', 'worry', 'y', 'yes']
+config.json: 100%
+ 483/483 [00:00<00:00, 49.7kB/s]
+tokenizer_config.json: 100%
+ 48.0/48.0 [00:00<00:00, 5.50kB/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+vocab.txt: 100%
+ 232k/232k [00:00<00:00, 1.99MB/s]
+tokenizer.json: 100%
+ 466k/466k [00:00<00:00, 11.7MB/s]
+[0]	validation_0-mlogloss:2.48973

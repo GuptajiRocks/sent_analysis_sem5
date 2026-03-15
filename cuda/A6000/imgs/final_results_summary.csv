@@ -1,0 +1,9 @@
+Model,Macro-F1,Category,ΔF1 vs Baseline
+TF-IDF + XGBoost,0.4356,Classical,-0.3590
+Vanilla RNN,0.3488,Recurrent,-0.4458
+LSTM,0.3712,Recurrent,-0.4234
+GRU,0.3957,Recurrent,-0.3989
+BiLSTM+RNN,0.3961,Recurrent,-0.3985
+BiLSTM+GRU,0.4027,Recurrent,-0.3919
+DistilBERT Baseline,0.7946,Transformer,+0.0000
+DCEC (Ours),0.4962,DCEC,-0.2984

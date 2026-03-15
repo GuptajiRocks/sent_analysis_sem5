@@ -1,0 +1,29 @@
+# ============================================================
+# DCEC — Domain-Conditioned Emotion Classification
+# Requirements for NVIDIA RTX A6000 / CUDA 13.0
+# Install: pip install -r requirements.txt
+# ============================================================
+
+# ── Core ML / Deep Learning ──────────────────────────────────
+
+
+# ── HuggingFace ──────────────────────────────────────────────
+transformers>=4.38.0
+datasets>=2.16.0
+accelerate>=0.27.0          # fp16 / mixed-precision support
+tokenizers>=0.15.0
+
+# ── Classical ML ─────────────────────────────────────────────
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+
+# ── Data ─────────────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+
+# ── Plotting ─────────────────────────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.13.0
+
+# ── Statistics ───────────────────────────────────────────────
+scipy>=1.11.0
